@@ -48,17 +48,19 @@
 	
 	public function eventPreSaveFilter($context)
 		{
-			ob_start();
-			session_start();
-			
-			if($_POST['fields']['captcha']){
-				$captcha = $_POST['fields']['captcha'];
-				if($captcha != $_SESSION['captcha']){
+			if (in_array('commentary-injector', $context['event']->eParamFILTERS)){
+				ob_start();
+				session_start();
+				
+				if($_POST['fields']['captcha']){
+					$captcha = $_POST['fields']['captcha'];
+					if($captcha != $_SESSION['captcha']){
+						$context['messages'][] = array('captcha', false, 'incorrect captcha');
+					}
+				}else{
 					$context['messages'][] = array('captcha', false, 'incorrect captcha');
 				}
-			}else{
-				$context['messages'][] = array('captcha', false, 'incorrect captcha');
+				ob_end_flush();
 			}
-			ob_end_flush();
 		}
 	}
